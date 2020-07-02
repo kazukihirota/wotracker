@@ -1,0 +1,28 @@
+{% from 'form-helper.html' import displayField%}
+{%extends 'base_before_login.html' %}
+
+{%block head%}{%endblock%}
+
+{%block main%}
+<div class="container">
+    <h2>Login now!</h2>
+    <p>Enter your username/password to start pricate chat</p>
+    
+    <form action="{{url_for('auth.login')}}" method="POST">
+        {{displayField(form.username, 'Username', autocomplete="off", autofocus=true)}}
+        {{displayField(form.password, 'Password')}}
+    
+        <div>
+            {{ form.submit_button }}
+        </div>
+        
+        {{ form.csrf_token }}
+    
+    </form>
+    
+    <hr>
+    
+    <p>Have not registered? <a href={{url_for('auth.register')}}>Register here</a>.</p>
+
+</div>
+{%endblock%}

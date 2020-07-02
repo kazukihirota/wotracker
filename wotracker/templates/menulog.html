@@ -1,0 +1,32 @@
+<!-- the page after logged in -->
+{% extends 'base.html' %}  
+{% block head %}
+{%for category in categories%}   
+   {{category.name}} menus
+{%endfor%}
+{% endblock %}
+
+{% block main %} 
+<div class="container my-4">   
+    <table class="table table-striped table-dark">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Default weight</th>
+            <th scope="col">Default reps</th>
+            <th scope="col">Default sets</th>
+          </tr>
+        </thead>
+        <tbody>
+        {%for exercise in exercises%}
+          <tr>
+            <th scope = "row"> {{exercise.name}} </th>
+            <td> {{exercise.weight}} </td>
+            <td> {{exercise.rep}} </td>
+            <td> {{exercise.sets}} </td>
+          </tr>
+        {%endfor%}
+        </tbody>
+      </table>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+.text-shadow{
+    text-shadow: 3px 3px 1px rgb(39, 35, 35);
+}
+
+#submit_button{
+    background-color: rgb(36, 32, 32);
+    color: lightcyan;
+    width: 100%;
+    display: inline-block;
+}
+
+.bg-black{
+    background-color: black !important;
+}

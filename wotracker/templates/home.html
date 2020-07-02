@@ -1,0 +1,24 @@
+<!-- the page after logged in -->
+{% extends 'base.html' %}     
+{% block head %} Welcomeback, {{user.username}}{% endblock %}
+
+{% block main %} 
+<div class="container">
+
+    <section>
+        <h1>Training Calender</h1>
+        <p>under construction...</p>
+    </section>
+
+    <section>
+      <h1 class="mb-3">Training menus</h1>
+      {%for category in categories%}
+        <div class="my-3">
+            <a class="h2 btn btn-block btn-secondary" href="{{ url_for('main.menulog', username=current_user.username, categoryid=category.id) }}">
+              {{category.name}} 
+            </a>    
+        </div>
+        {%endfor%}
+    </section>
+</div>
+{% endblock %}
