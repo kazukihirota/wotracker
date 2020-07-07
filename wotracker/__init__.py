@@ -30,7 +30,7 @@ def create_app():
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=50)
 
     #database 
-    app.config['SQLALCHEMY_DATABASE_URI'] = og.environ.get('DATABASE_URL')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     #initialise database
     db.init_app(app)
     login_manager.init_app(app)
