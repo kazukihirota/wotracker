@@ -25,12 +25,12 @@ def create_app():
     app.debug=True
 
     # Session config
-    app.secret_key = '\xbd\xe0\x83\x07\xfdcBOG\xbcXmb\xed\x00E'
+    app.secret_key = os.environ.get('SECRET_KEY')
     # app.config['SESSION_COOKIE_NAME'] = 'google-login-session'
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=50)
 
     #database 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://rfshrwhoqqqxem:b84b85bd8e3068de7363634fbf0137ae36f926cf0ca3f60c78cfc3a02229a5f3@ec2-54-91-178-234.compute-1.amazonaws.com:5432/ddttf394d684r8'
+    app.config['SQLALCHEMY_DATABASE_URI'] = og.environ.get('DATABASE_URL')
     #initialise database
     db.init_app(app)
     login_manager.init_app(app)
