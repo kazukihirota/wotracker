@@ -1,10 +1,12 @@
 from flask_wtf import FlaskForm
+from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField, FloatField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 from passlib.hash import pbkdf2_sha256
-from .models import User
+from .models import *
 
-#check if the password mathes user
+#check if the password matches user
 #you can reuse it if you write this function ouside of loginform
 def invalid_credentials(form,field):
     username_entered = form.username.data
@@ -16,6 +18,7 @@ def invalid_credentials(form,field):
     elif not pbkdf2_sha256.verify(password_entered, user_object.password):
         raise ValidationError("Username or password is incorrect")
 
+#User account registration
 class RegistrationForm(FlaskForm):
     
     username = StringField('username_label', validators=[InputRequired(message="Username required"), Length(min=4, max=25, message="Username must be between 4 and 25 characters")])
@@ -28,19 +31,49 @@ class RegistrationForm(FlaskForm):
         if user_object:
             raise ValidationError("User name already exist. select different username")
 
+#Login form
 class LoginForm(FlaskForm):
     username = StringField('username_label', validators=[InputRequired(message="Username required")])
     password = PasswordField('password_label', validators=[InputRequired(message="Password required"), invalid_credentials])
     submit_button = SubmitField('Login')
 
+#Category registration
+class CategoryRegForm(FlaskForm):
+    category_name = StringField('category_name_label', validators=[InputRequired(message="Name required")])
+    submit_button = SubmitField('Add Category')
+
+    def validate_category(self, category_name):
+        category_object = Category.query.filter_by(name=category_name.data, userid=current_user.id).first()
+        if category_object:
+            raise ValidationError("Category already exist.")
+
+#daily record form class and method
+def part_choices():
+    userid = current_user.id
+    qry_part = Category.query.filter(Category.userid==userid).all()
+    return qry_part
+
+#Registration form for menu
 class ExerciseRegForm(FlaskForm):
     exercise_name = StringField('exercise_name_label', validators=[InputRequired(message="Name required")])
-    exercise_part = SelectField('exercise_part_field', choices=[('1','shoulder'),('2','chest'), ('3','back'), ('4','arm'),('5', 'leg'),('6','others')])
+    exercise_part = QuerySelectField('exercise_part_label', query_factory = part_choices, get_label = 'name', allow_blank = False)
     exercise_weight = FloatField('exercise_weight_label')
     exercise_rep = IntegerField('exercise_rep_label')
     exercise_sets = IntegerField('exercise_sets_label')
-    submit_button = SubmitField('Add Training Menu')
+    submit_button = SubmitField('Add training menu')
 
 class DailyRecordForm(FlaskForm):
-    today_part = Selectfield('today_part_label', choices=[('1','shoulder'),('2','chest'), ('3','back'), ('4','arm'),('5', 'leg'),('6','others')])
-    today_exercise = 
+    today_part = QuerySelectField('today_part_label', query_factory = part_choices, get_label = 'name', allow_blank = False)
+    submit_button = SubmitField('Select the menus')
+
+def exercise_choices():
+    userid = current_user.id
+    qry = Exercise.query.filter(Exercise.user_id==userid).all()
+    return qry
+
+class DailyExerciseForm(FlaskForm):
+    today_exercise = QuerySelectField('today_exercise_label', query_factory = exercise_choices, allow_blank=False, get_label='name')
+    today_weight = FloatField('exercise_weight_label')
+    today_rep = IntegerField('exercise_rep_label')
+    today_sets = IntegerField('today_sets_label')
+    submit_button = SubmitField('Add training')

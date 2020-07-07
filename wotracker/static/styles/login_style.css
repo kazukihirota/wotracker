@@ -31,4 +31,6 @@
     color: lightcyan;
     width: 100%;
     display: inline-block;
+    border-radius: .25rem;
+    padding: .375rem .75rem;
 }

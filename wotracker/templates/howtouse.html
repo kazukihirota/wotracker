@@ -1,0 +1,33 @@
+{%extends 'base_before_login.html' %}
+
+{%block head%}How to use this appilication{%endblock%}
+
+{%block main%}
+<div class="container">
+    <article class="mb-4">
+        <h3>1. Add category</h3>
+        <p>Create your own training category</p>
+        <img src="{{url_for('static', filename='images/howto1.jpg')}}" class="img-fluid" alt="img1">
+    </article>
+    <article class="mb-4">
+        <h3>2. Add training to the category</h3>
+        <p>Add your trainings to the categories you created. Organise your training menu however you like it!</p>
+        <img src="{{url_for('static', filename='images/howto2.jpg')}}" class="img-fluid" alt="img1">
+    </article>
+    <article class="mb-4">
+        <h3>3. Add daily record</h3>
+        <p>Whenever you work out, put it down on your daily record</p>
+        <img src="{{url_for('static', filename='images/howto3.jpg')}}" class="img-fluid" alt="img1">
+    </article>
+    <article class="mb-4">
+        <h3>4. Track your workout!</h3>
+        <p>You can check your daily records and training menus whenever you want!</p>
+        <img src="{{url_for('static', filename='images/howto4.jpg')}}" class="img-fluid" alt="img1">
+        <img src="{{url_for('static', filename='images/howto5.jpg')}}" class="img-fluid" alt="img1">
+    </article>
+
+    <div class="my-5">
+        <a class="h2 btn btn-block btn-outline-dark " href="{{ url_for('index') }}">Go back to the home page</a>
+    </div>
+</div>
+{%endblock%}

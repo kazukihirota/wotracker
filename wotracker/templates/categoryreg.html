@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% from 'form-helper.html' import displayField %}       
-{% block head %} Add daily record {% endblock %}
+{% block head %} Add new Category {% endblock %}
 
 {% block main %} 
 <div class="container text-center">
 
-    <form action = "{{url_for('main.dailyrecord')}}", method="POST">
+    <form action = "{{url_for('main.categoryreg')}}", method="POST">
         <!-- using macro for the same codes -->
-        <p>Select today's part</p>
-        {{displayField(form.today_part, 'Select the part', autocomplete="off", autofocus=true)}}
+       
+        {{displayField(form.category_name, 'Type the category', autocomplete="off", autofocus=true)}}
 
         {{ form.submit_button }}
        

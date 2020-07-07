@@ -17,7 +17,7 @@
 <body>
     <div id = "homepage">
         <header class="home-header">
-            <h1 class="display-3 text-light text-shadow">WO! Tracker</h1>
+            <h1 class="h1 text-light text-shadow">WO! Tracker</h1>
             <!-- flash message -->
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -32,20 +32,18 @@
         </header>
         <div class="container justify-content-center text-center home-content">
             
-                <h1 class="display-4 text-center text-light text-shadow">
-                    Keep track of your workout and achieve your goal effectively </h1>
-            <a class="btn btn-light btn-block btn-outline-dark" href="{{url_for('login_by_google')}}">
-                Log in with Google  <img src="{{url_for('static',
-                 filename='images/googlelogo.png')}}" alt="googlelogo" height="40px" width="40px" class="ml-1">
-            </a>
-            <a class="btn btn-secondary btn-block my-4" href="{{url_for('auth.login')}}">
-                Log in with Username and password instead
-            </a>
+                <h2 class="text-center text-light text-shadow mb-5">
+                    Keep track of your workout and achieve your goal effectively 
+                </h2>
 
+            <a class="btn btn-dark btn-block my-4" href="{{url_for('auth.login')}}">Log in</a>
             <p class="text-light">Do not have any account? <a href="{{url_for('auth.register')}}">Register here</a></p>
+            <div style="margin-top: 30%;">
+                <a class="text-light btn btn-secondary btn-block shadow" style="opacity: 80%;"  href="{{url_for('howtouse', _external=True)}}">How to use this application?</a>
+            </div>
         </div>
-          
-       
+        
+
     </div>
 
     <footer class="footer">

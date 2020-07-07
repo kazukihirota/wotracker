@@ -28,10 +28,19 @@
                     <div class="collapse navbar-collapse" id="navbarToggler">
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item">
+                                <a href= "{{url_for('main.categoryreg')}}" class="text-light nav-link">Add Category</a> 
+                            </li> 
+                            <li class="nav-item">
                                 <a href= "{{url_for('main.menureg')}}" class="text-light nav-link">Add training menu</a> 
                             </li> 
                             <li class="nav-item">
-                                <a href= "{{url_for('main.dailyrecord', username=current_user.username)}}" class="text-light nav-link"> Add daily record</a> 
+                                <a href= "{{url_for('main.dailyrecord')}}" class="text-light nav-link"> Add daily record</a> 
+                            </li> 
+                            <li class="nav-item">
+                                <a href= "{{url_for('main.allmenulog', username = current_user.username)}}" class="text-light nav-link">See all training menus</a> 
+                            </li> 
+                            <li class="nav-item">
+                                <a href= "{{url_for('main.alldailyrecord', username = current_user.username)}}" class="text-light nav-link">See all training records</a> 
                             </li> 
                             <li class="nav-item">
                                 <a href= "{{url_for('main.logout')}}" class="text-light nav-link">Log out</a> 
@@ -51,7 +60,7 @@
         {% endif %}
         {% endwith %} 
 
-        <section class="h1 text-center bg-black text-light py-2 border border-dark">
+        <section class="h2 text-center bg-black text-light py-2 border border-dark">
 
             {% block head %}{% endblock %}
         </section>
