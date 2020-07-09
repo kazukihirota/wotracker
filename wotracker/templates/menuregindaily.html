@@ -1,0 +1,23 @@
+{% extends 'base.html' %}   
+{% from 'form-helper.html' import displayField %}  
+{% block head %} Add training menu {% endblock %}
+
+{% block main %} 
+<div class="container my-4">
+
+    <form action = "{{url_for('main.menuregindaily')}}", method="POST">
+        <!-- using macro for the same codes -->
+        {{displayField(form.exercise_name, 'Name', autocomplete="off", autofocus=true)}}
+        {{displayField(form.exercise_part, 'Select the part below')}}
+        {{displayField(form.exercise_weight, 'default weight')}}
+        {{displayField(form.exercise_rep, 'default reps')}}
+        {{displayField(form.exercise_sets, 'default sets')}}
+
+        {{ form.submit_button }}
+       
+        {{ form.csrf_token }}
+    </form>
+    <hr>
+</div>
+
+{% endblock %}

@@ -12,7 +12,7 @@ bp = Blueprint('main', __name__)
 def home(username):
     user=User.query.filter_by(username=username).first()
     categories = Category.query.filter(Category.userid==user.id).all()
-    dailyrecords = DailyRecord.query.filter(DailyRecord.user_id==current_user.id).order_by(DailyRecord.datetime).limit(10).all()
+    dailyrecords = DailyRecord.query.filter(DailyRecord.user_id==current_user.id).order_by(DailyRecord.date).limit(5).all()
     dailyexercises = DailyExercise.query.all()
     return render_template('home.html', user=user, categories = categories, dailyrecords = dailyrecords, dailyexercises = dailyexercises)
 
@@ -36,12 +36,16 @@ def allmenulog(username):
 
 @bp.route('/<username>/alldailyrecords')
 def alldailyrecord(username):
-    dailyrecords = DailyRecord.query.filter(DailyRecord.user_id==current_user.id).order_by(DailyRecord.datetime).all()
+    dailyrecords = DailyRecord.query.filter(DailyRecord.user_id==current_user.id).order_by(DailyRecord.date.desc()).all()
     dailyexercises = DailyExercise.query.all()
 
     return render_template('alldailyrecord.html', dailyrecords = dailyrecords, dailyexercises = dailyexercises)
 
+
+
 ###### Addition #########
+
+
 
 #add new category (training part)
 @bp.route('/categoryreg', methods=['GET', 'POST'])
@@ -87,35 +91,87 @@ def menureg():
 
     return render_template('menureg.html', form = exercise_form)
 
+#adding menu from daily record 
+@bp.route('/menuregindaily', methods=['GET', 'POST'])
+@login_required
+def menuregindaily():
+    exercise_form = ExerciseRegForm()
+
+    if exercise_form.validate_on_submit():
+        name = exercise_form.exercise_name.data
+        part = exercise_form.exercise_part.data.id #get id from category!!!!
+        weight = exercise_form.exercise_weight.data
+        rep = exercise_form.exercise_rep.data
+        sets= exercise_form.exercise_sets.data
+        user_id = current_user.id
+
+        category = exercise_form.exercise_part.data.name
+
+        exercise = Exercise(name=name, category_id = part, weight = weight, rep = rep, sets = sets, user_id = user_id)
+        db.session.add(exercise)
+        db.session.commit()
+
+        flash('successfully added','success')
+
+        return redirect(url_for('main.dailyexercises', category=category))
+
+    return render_template('menuregindaily.html', form = exercise_form)
+
+
 #Adding daily record
 @bp.route('/dailyrecord', methods=['GET', 'POST'])
 @login_required
 def dailyrecord():
     daily_record_form = DailyRecordForm()
 
+    todays_date = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
+    #get all the category today for the user
+    categories_exist = DailyRecord.query.filter(DailyRecord.user_id==current_user.id, DailyRecord.date==todays_date).all()
+
     if daily_record_form.validate_on_submit():
-        dt = datetime.now()
-        category = daily_record_form.today_part.data.name
+        dt = todays_date
+        categoryname = daily_record_form.today_part.data.name
         user_id = current_user.id
 
-        dailyrecord = DailyRecord(datetime = dt, category = category, user_id = user_id)
-        db.session.add(dailyrecord)
-        db.session.commit()
+        if not categories_exist: #making new daily record for the day 
+           
+            dailyrecord = DailyRecord(date = dt, category = categoryname, user_id = user_id)
+            db.session.add(dailyrecord)
+            db.session.commit()
 
-        return redirect(url_for('main.dailyexercises'))
+            flash('none','error')
+            return redirect(url_for('main.dailyexercises', category=categoryname))
+
+        else:
+            #there is at least one daily record
+            for category_exist in categories_exist:
+                if categoryname == category_exist.category:
+                    flash('already exist','success')
+                    category = categoryname
+
+                    return redirect(url_for('main.dailyexercises', category = categoryname))
+                
+            dailyrecord = DailyRecord(date = dt, category = categoryname, user_id = user_id)
+            db.session.add(dailyrecord)
+            db.session.commit()
+            flash('added','success')
+            return redirect(url_for('main.dailyexercises', category = categoryname))
 
     return render_template('dailyrecord.html', form = daily_record_form)
 
 #Register exercises in daily record
-@bp.route('/dailyexercises', methods=['GET', 'POST'])
+@bp.route('/dailyexercises/<category>', methods=['GET', 'POST'])
 @login_required
-def dailyexercises():
+def dailyexercises(category):
     daily_exercise_form = DailyExerciseForm()
+
     userid=current_user.id
+    todays_date = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
+    part = DailyRecord.query.filter(DailyRecord.user_id==userid, DailyRecord.date==todays_date, DailyRecord.category==category).first()
 
     if daily_exercise_form.validate_on_submit():
         
-        dailyrecordid = DailyRecord.query.filter(DailyRecord.user_id==userid).order_by(DailyRecord.datetime.desc()).first().id
+        dailyrecordid = DailyRecord.query.filter(DailyRecord.user_id==userid, DailyRecord.date==todays_date, DailyRecord.category==category).first().id
         exercise = daily_exercise_form.today_exercise.data.name
         weight = daily_exercise_form.today_weight.data
         rep = daily_exercise_form.today_rep.data
@@ -127,11 +183,13 @@ def dailyexercises():
 
         flash('Successfully added', 'success')
 
-        return redirect(url_for('main.dailyexercises'))
+        return redirect(url_for('main.dailyexercises', category=category))
 
-    return render_template('dailyexercise.html', form = daily_exercise_form)
+    return render_template('dailyexercise.html', form = daily_exercise_form, part=part)
 
-####Deletion#####
+
+
+##### Deletion #####
 
 #Delete category
 @bp.route('/deletecategory/<int:id>', methods=['POST'])
@@ -154,7 +212,7 @@ def deletecategory(id):
     return redirect(url_for('main.allmenulog', username=current_user.username))
 
 #Delete menu
-@bp.route('/deletemenu/<int:id>', methods=['POST'])
+@bp.route('/deleteexercise/<int:id>', methods=['POST'])
 @login_required
 def deletemenu(id):
     menu = Exercise.query.filter_by(id=id).first()
@@ -179,11 +237,21 @@ def deletemenu(id):
 @login_required
 def deletedailyexercise(id):
     dailyexercise = DailyExercise.query.filter_by(id=id).first()
+    #querying all exercises in the same daily record id
+    otherdailyexercises = DailyExercise.query.filter(DailyExercise.dailyrecord_id==id).all()
+    recordid = dailyexercise.dailyrecord_id
+    thedailyrecord = DailyRecord.query.filter(DailyRecord.id==recordid).first()
 
+    #delete exercise record from the daily record
     db.session.delete(dailyexercise)
+
+    #if there is no other exercises, delete daily record itself
+    if not otherdailyexercises:
+        db.session.delete(thedailyrecord)
+
     db.session.commit()
 
-    flash('the exercise record is successfully deleted','success')
+    flash('The exercise record is successfully deleted','success')
 
     return redirect(url_for('main.alldailyrecord', username=current_user.username))
 

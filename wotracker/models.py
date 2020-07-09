@@ -32,7 +32,7 @@ class Exercise(db.Model):
 class DailyRecord(db.Model):
     __tablename__ = "dailyrecords"
     id = db.Column(db.Integer, primary_key=True)
-    datetime = db.Column(db.DateTime, nullable = False)
+    date = db.Column(db.Date, nullable = False)
     category = db.Column(db.String(64), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     daily_exercises = db.relationship('DailyExercise', backref='DailyRecord', cascade="all, delete-orphan")

@@ -76,4 +76,4 @@ class DailyExerciseForm(FlaskForm):
     today_weight = FloatField('exercise_weight_label')
     today_rep = IntegerField('exercise_rep_label')
     today_sets = IntegerField('today_sets_label')
-    submit_button = SubmitField('Add training')
+    submit_button = SubmitField('Add daily training')

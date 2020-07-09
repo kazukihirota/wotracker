@@ -5,18 +5,20 @@
 {% block main %} 
 <div class="container">
         {%for dailyrecord in dailyrecords%}
-
-          <h4>{{dailyrecord.datetime.strftime('%b %d')}}</h4>
-          <div class="row">
-            <div class="col-4">
-              <h4>{{dailyrecord.category}}</h4>
-            </div>
-            <div class="col-8 text-right">
-              <form method="POST" id="delete-btn" action="{{url_for('main.deletedailyrecord', id=dailyrecord.id)}}">
-                <input type="submit" value="Delete daily record" class="btn btn-light">
-            </form>
-            </div>
+        <div class="row">
+          <div class="col-3 align-middle">
+            <h6>{{dailyrecord.date.strftime('%b %d')}}</h6>
+              
           </div>
+          <div class="col-3">
+            <h6>{{dailyrecord.category}}</h6>
+          </div>
+          <div class="col-6 text-right">
+            <form method="POST" id="delete-btn" action="{{url_for('main.deletedailyrecord', id=dailyrecord.id)}}">
+              <input type="submit" value="Delete daily record" class="btn btn-light">
+          </form>
+          </div>
+        </div>
               <table class="table table-striped table-dark table-sm">
                 <thead>
                   <tr>

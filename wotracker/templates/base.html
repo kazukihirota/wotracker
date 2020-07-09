@@ -16,10 +16,10 @@
 <body>
     <header>
         <!-- navbar and search bar -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-black">
             <div class="container-fluid">
                         <a href="{{url_for('main.home', username=current_user.username, _external = True)}}" class="navbar-brand text-white text-shadow">
-                           Wo!Tracker  
+                           Wo!Tracker <img src="{{url_for('static', filename='images/gym.png')}}" alt="icon"> 
                         </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler"
                         aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,22 +28,22 @@
                     <div class="collapse navbar-collapse" id="navbarToggler">
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item">
-                                <a href= "{{url_for('main.categoryreg')}}" class="text-light nav-link">Add Category</a> 
+                                <a href= "{{url_for('main.categoryreg')}}" class="text-light nav-link text-center">Add Category</a> 
                             </li> 
                             <li class="nav-item">
-                                <a href= "{{url_for('main.menureg')}}" class="text-light nav-link">Add training menu</a> 
+                                <a href= "{{url_for('main.menureg')}}" class="text-light nav-link text-center">Add training menu</a> 
                             </li> 
                             <li class="nav-item">
-                                <a href= "{{url_for('main.dailyrecord')}}" class="text-light nav-link"> Add daily record</a> 
+                                <a href= "{{url_for('main.dailyrecord')}}" class="text-light nav-link text-center"> Add daily record</a> 
                             </li> 
                             <li class="nav-item">
-                                <a href= "{{url_for('main.allmenulog', username = current_user.username)}}" class="text-light nav-link">See all training menus</a> 
+                                <a href= "{{url_for('main.allmenulog', username = current_user.username)}}" class="text-white-50 nav-link text-center">See all training menus</a> 
                             </li> 
                             <li class="nav-item">
-                                <a href= "{{url_for('main.alldailyrecord', username = current_user.username)}}" class="text-light nav-link">See all training records</a> 
+                                <a href= "{{url_for('main.alldailyrecord', username = current_user.username)}}" class="text-white-50 nav-link text-center">See all daily records</a> 
                             </li> 
                             <li class="nav-item">
-                                <a href= "{{url_for('main.logout')}}" class="text-light nav-link">Log out</a> 
+                                <a href= "{{url_for('main.logout')}}" class="text-muted nav-link text-center">Log out</a> 
                             </li> 
                         </ul>
                     </div>
@@ -60,7 +60,7 @@
         {% endif %}
         {% endwith %} 
 
-        <section class="h2 text-center bg-black text-light py-2 border border-dark">
+        <section class="h2 text-center bg-dark text-light py-2">
 
             {% block head %}{% endblock %}
         </section>
@@ -73,7 +73,8 @@
 
     <footer class="footer">
         <div class="text-center py-2 bg-secondary">
-            <span class="text-light">Copyright &copy; 2020: Kazza Hiroty</span>
+            <span class="text-light">Copyright &copy; 2020: Kazza</span>
+            <p class="text-black-50">version 1.2.0</p>
         </div>
 
     </footer>
