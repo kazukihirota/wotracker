@@ -139,14 +139,12 @@ def dailyrecord():
             db.session.add(dailyrecord)
             db.session.commit()
 
-            flash('none','error')
             return redirect(url_for('main.dailyexercises', category=categoryname))
 
         else:
             #there is at least one daily record
             for category_exist in categories_exist:
                 if categoryname == category_exist.category:
-                    flash('already exist','success')
                     category = categoryname
 
                     return redirect(url_for('main.dailyexercises', category = categoryname))
@@ -154,7 +152,7 @@ def dailyrecord():
             dailyrecord = DailyRecord(date = dt, category = categoryname, user_id = user_id)
             db.session.add(dailyrecord)
             db.session.commit()
-            flash('added','success')
+
             return redirect(url_for('main.dailyexercises', category = categoryname))
 
     return render_template('dailyrecord.html', form = daily_record_form)
@@ -212,7 +210,7 @@ def deletecategory(id):
     return redirect(url_for('main.allmenulog', username=current_user.username))
 
 #Delete menu
-@bp.route('/deleteexercise/<int:id>', methods=['POST'])
+@bp.route('/deletemenu/<int:id>', methods=['POST'])
 @login_required
 def deletemenu(id):
     menu = Exercise.query.filter_by(id=id).first()
@@ -237,17 +235,18 @@ def deletemenu(id):
 @login_required
 def deletedailyexercise(id):
     dailyexercise = DailyExercise.query.filter_by(id=id).first()
-    #querying all exercises in the same daily record id
-    otherdailyexercises = DailyExercise.query.filter(DailyExercise.dailyrecord_id==id).all()
     recordid = dailyexercise.dailyrecord_id
-    thedailyrecord = DailyRecord.query.filter(DailyRecord.id==recordid).first()
+
+    #querying all exercises in the same daily record id
+    otherdailyexercises = DailyExercise.query.filter(DailyExercise.dailyrecord_id==recordid).all() 
+    dailyrecordtodelete = DailyRecord.query.filter(DailyRecord.id==recordid).first()
 
     #delete exercise record from the daily record
     db.session.delete(dailyexercise)
 
     #if there is no other exercises, delete daily record itself
     if not otherdailyexercises:
-        db.session.delete(thedailyrecord)
+        db.session.delete(dailyrecordtodelete)
 
     db.session.commit()
 
