@@ -6,13 +6,31 @@ from .wtform_fields import *
 
 bp = Blueprint('main', __name__)
 
+@bp.route('/')
+def index():
+    return render_template('index.html')
+
+@bp.route('/howtouse')
+def howtouse():
+  return render_template('howtouse.html')
+
+@bp.errorhandler(404) 
+# inbuilt function which takes error as parameter 
+def not_found(e): 
+  return render_template("404.html")
+
+@bp.errorhandler(500)
+def internal_error(e):
+  return render_template("500.html")
+
+
 @bp.route('/<username>/home')
 @login_required
 #user specific
 def home(username):
     user=User.query.filter_by(username=username).first()
     categories = Category.query.filter(Category.userid==user.id).all()
-    dailyrecords = DailyRecord.query.filter(DailyRecord.user_id==current_user.id).order_by(DailyRecord.date).limit(5).all()
+    dailyrecords = DailyRecord.query.filter(DailyRecord.user_id==current_user.id).order_by(DailyRecord.date.desc()).limit(10).all()
     dailyexercises = DailyExercise.query.all()
     return render_template('home.html', user=user, categories = categories, dailyrecords = dailyrecords, dailyexercises = dailyexercises)
 
@@ -122,8 +140,8 @@ def menuregindaily():
 @bp.route('/dailyrecord', methods=['GET', 'POST'])
 @login_required
 def dailyrecord():
+    
     daily_record_form = DailyRecordForm()
-
     todays_date = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
     #get all the category today for the user
     categories_exist = DailyRecord.query.filter(DailyRecord.user_id==current_user.id, DailyRecord.date==todays_date).all()
@@ -157,6 +175,7 @@ def dailyrecord():
 
     return render_template('dailyrecord.html', form = daily_record_form)
 
+
 #Register exercises in daily record
 @bp.route('/dailyexercises/<category>', methods=['GET', 'POST'])
 @login_required
@@ -165,7 +184,13 @@ def dailyexercises(category):
 
     userid=current_user.id
     todays_date = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
+
+    #exercise part 
     part = DailyRecord.query.filter(DailyRecord.user_id==userid, DailyRecord.date==todays_date, DailyRecord.category==category).first()
+
+    #querying choices 
+    categoryid = Category.query.filter_by(name=category).first().id
+    daily_exercise_form.today_exercise.query = Exercise.query.filter(Exercise.category_id==categoryid).all()
 
     if daily_exercise_form.validate_on_submit():
         
@@ -185,7 +210,10 @@ def dailyexercises(category):
 
     return render_template('dailyexercise.html', form = daily_exercise_form, part=part)
 
-
+# def exercise_choices(categoryid):
+#     userid = current_user.id
+#     qry = Exercise.query.filter(Exercise.user_id==userid, Exercise.category_id==categoryid).all()
+#     return qry
 
 ##### Deletion #####
 

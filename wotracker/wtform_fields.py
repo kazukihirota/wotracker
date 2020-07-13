@@ -1,9 +1,11 @@
 from flask_wtf import FlaskForm
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField, FloatField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField, FloatField, DateField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
+from wtforms.validators import InputRequired, Length, EqualTo, ValidationError, Optional
 from passlib.hash import pbkdf2_sha256
+
+# from .views import exercise_choices
 from .models import *
 
 #check if the password matches user
@@ -57,9 +59,9 @@ def part_choices():
 class ExerciseRegForm(FlaskForm):
     exercise_name = StringField('exercise_name_label', validators=[InputRequired(message="Name required")])
     exercise_part = QuerySelectField('exercise_part_label', query_factory = part_choices, get_label = 'name', allow_blank = False)
-    exercise_weight = FloatField('exercise_weight_label')
-    exercise_rep = IntegerField('exercise_rep_label')
-    exercise_sets = IntegerField('exercise_sets_label')
+    exercise_weight = FloatField('exercise_weight_label', validators=[Optional()])
+    exercise_rep = IntegerField('exercise_rep_label', validators=[Optional()])
+    exercise_sets = IntegerField('exercise_sets_label', validators=[Optional()])
     submit_button = SubmitField('Add training menu')
 
 class DailyRecordForm(FlaskForm):
@@ -67,13 +69,11 @@ class DailyRecordForm(FlaskForm):
     submit_button = SubmitField('Select the menus')
 
 def exercise_choices():
-    userid = current_user.id
-    qry = Exercise.query.filter(Exercise.user_id==userid).all()
-    return qry
+    return Exercise.query.filter(Exercise.user_id==current_user.id).all()
 
 class DailyExerciseForm(FlaskForm):
     today_exercise = QuerySelectField('today_exercise_label', query_factory = exercise_choices, allow_blank=False, get_label='name')
-    today_weight = FloatField('exercise_weight_label')
-    today_rep = IntegerField('exercise_rep_label')
-    today_sets = IntegerField('today_sets_label')
+    today_weight = FloatField('exercise_weight_label', validators=[Optional()])
+    today_rep = IntegerField('exercise_rep_label', validators=[Optional()])
+    today_sets = IntegerField('today_sets_label', validators=[Optional()])
     submit_button = SubmitField('Add daily training')

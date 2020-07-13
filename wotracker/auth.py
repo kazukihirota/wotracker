@@ -1,12 +1,13 @@
 from flask import Blueprint, flash, render_template, request, redirect, session, url_for
 from flask_login import login_required, logout_user, current_user, login_user
 from .wtform_fields import *
+from passlib.hash import pbkdf2_sha256
 from .models import User, db
 from . import login_manager
 
-auth_bp = Blueprint('auth', __name__)
+auth = Blueprint('auth', __name__)
 
-@auth_bp.route('/register', methods=['GET', 'POST'])
+@auth.route('/register', methods=['GET', 'POST'])
 def register():
 
     reg_form = RegistrationForm()
@@ -28,7 +29,7 @@ def register():
 
     return render_template("registration.html", form = reg_form)
 
-@auth_bp.route("/login", methods=['GET', 'POST']) 
+@auth.route("/login", methods=['GET', 'POST']) 
 def login():
     login_form =LoginForm()
 
