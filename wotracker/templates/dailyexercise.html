@@ -17,7 +17,7 @@
        
         {{ form.csrf_token }}
     </form>
-    <a class="btn btn-dark btn-block my-3" href="{{url_for('main.menuregindaily')}}">Add new menu</a>
+    <a class="btn btn-dark btn-block my-3" href="{{url_for('main.menuregindaily', category=part.category)}}">Add new menu</a>
     <a class="btn btn-dark btn-block my-3" href="{{url_for('main.home', username=current_user.username)}}">Go back to Home</a>
 </div>
 

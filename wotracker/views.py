@@ -110,10 +110,13 @@ def menureg():
     return render_template('menureg.html', form = exercise_form)
 
 #adding menu from daily record 
-@bp.route('/menuregindaily', methods=['GET', 'POST'])
+@bp.route('/menuregindaily/<category>', methods=['GET', 'POST'])
 @login_required
-def menuregindaily():
+def menuregindaily(category):
     exercise_form = ExerciseRegForm()
+
+    part = Category.query.filter_by(name=category, userid=current_user.id).first()
+    exercise_form.exercise_part.query = Category.query.filter(Category.userid==current_user.id, Category.name==category).all()
 
     if exercise_form.validate_on_submit():
         name = exercise_form.exercise_name.data
@@ -133,7 +136,7 @@ def menuregindaily():
 
         return redirect(url_for('main.dailyexercises', category=category))
 
-    return render_template('menuregindaily.html', form = exercise_form)
+    return render_template('menuregindaily.html', form = exercise_form, part=part)
 
 
 #Adding daily record
@@ -185,7 +188,7 @@ def dailyexercises(category):
     userid=current_user.id
     todays_date = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
 
-    #exercise part 
+    #specify exercise part 
     part = DailyRecord.query.filter(DailyRecord.user_id==userid, DailyRecord.date==todays_date, DailyRecord.category==category).first()
 
     #querying choices 
